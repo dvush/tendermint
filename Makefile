@@ -198,13 +198,16 @@ build_c-amazonlinux:
 	docker run --rm -it -v `pwd`:/tendermint tendermint/tendermint:build_c-amazonlinux
 
 # Run a 4-node testnet locally
-localnet-start: localnet-stop build-docker-localnode
-	@if ! [ -f build/node0/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/tendermint:Z tendermint/localnode testnet --config /etc/tendermint/config-template.toml --v 4 --o . --populate-persistent-peers --starting-ip-address 192.167.10.2; fi
+localnet-start: localnet-stop build-docker
+	@if ! [ -f build/node0/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/tendermint:Z tendermint/localnode testnet --config /etc/tendermint/config-template.toml --v 1 --n 1 --o . --populate-persistent-peers --starting-ip-address 192.167.10.2; fi
 	docker-compose up
 
 # Stop testnet
 localnet-stop:
 	docker-compose down
+
+localnet-clean:
+	rm -rf build/node*
 
 ###########################################################
 ### Remote full-nodes (sentry) using terraform and ansible
